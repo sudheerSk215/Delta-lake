@@ -53,5 +53,26 @@ finalflatten = resultexp.select(
 "results.user.picture.large"
 ).withcolumn("username",regexp_replace(col("username"),"([0-9])","")).select("username","city","state","zip").drop_duplicates(["username"])
 
+finalflatten.show()
 
+import subprocess 
+path_exists= subprocess.run(["aws","s3","ls","s3://skbuck/dest/deltadata/"]),stdout=subprocess.PPE, stderr = subprocess.PIPE).returncode == 0
+print(path_exists)
+
+if not path_exists : #FALSE
+  print("======= DATA DOES NOT EXISTS ========")
+  #Write the initial data to the s3 path in delta format 
+finalflatten.write.format("delta").mode("overwrite").save("s3://skbuck/dest/deltadata")
+
+else:
+  print()
+  target=spark.read.load("s3://skbuck/dest/deltadata")
+  source = finalflatten
+  print("===== UPDATES ====")
+  print()
+  updates = target.join(source,["username"],"inner")
+  updates.show()
+  print()
+  print("==== NEW ====")
+  
   
