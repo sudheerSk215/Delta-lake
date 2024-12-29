@@ -19,12 +19,13 @@ spark = ( sparksession.builder
 
 deltadf = spark.read.format("parquet").load("s3://skbuck"/dest/deltadata")
 snowdf = spark.read.load("s3://skbuck/dest/site_count")
-joindf = deltadf.join(snowdf,["username"],"left")
+tmdf = spark.read.load("s3://skbuck/total_amount_data")      
+joindf = deltadf.join(snowdf,["username"],"left").join(tmdf,["username"],"left")
 
  joindf.write.mode("overwrite").save("s3://skbuck/dest/masterdata") 
 
 print()
-print("=== Master data ===")
+print("=== Master data Written ===")
 print()      
 
       
