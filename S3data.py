@@ -11,5 +11,16 @@ conf = sparkconf().setAppName("pyspark").setMaster("local[*]")
 sc = sparkcontext(conf = conf)
 
 
+spark = ( sparksession.builder
+                      .appName("S3data")
+                      .getOrCreate()
+        )
+
 s3df = spark.read.load("s3://skbuck/src")
 s3df.show()
+
+aggamt = s3df.groupBy("username").agg(sum("amount").alias("total")).withcolumn("total",expr("cast(total as decimal(18,2))"))
+aggamt.show()
+
+aggamt.write.mode("overwrite").save("s3://skbuck/dest/total_amount_data")
+
