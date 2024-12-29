@@ -45,11 +45,13 @@ finalflatten = resultexp.select(
 "results.user.location.street",
 "results.user.location.zip",
 "results.user.md5",
-"results.user.location",
+"results.user.name.first",
+"results.user.name.last",
+"results.user.name.title",
+"results.user.password",
+"results.user.phone",
+"results.user.picture.large"
+).withcolumn("username",regexp_replace(col("username"),"([0-9])","")).select("username","city","state","zip").drop_duplicates(["username"])
 
 
-
-
-
-
-)
+  
