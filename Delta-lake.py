@@ -74,5 +74,29 @@ else:
   updates.show()
   print()
   print("==== NEW ====")
+
+else:                #TRUE
+  print("===== DATA ALREADY EXISTS =====")
+  #Read the existing data from s3 path 
+from delta.tables import DeltaTable
+target1 = DeltaTable.forpath(spark "s3a://skbuk/dest/deltadata")
+target1.alias().merge(
+  finalflatten.alias("source"),"target.username = source.username "  #Match Condition 
+).whenMatchedUpdate (
+  set = {
+     "city": "source.city",
+     "state": "source.state",
+     "zip": "source.zip"
+  }
+).whenNotMatchedInsert
+(
+values = {
+  "username" : "source.username",
+  "city": "source.city",
+  "state": "source.state",
+  "zip": "source.zip"
+}
+).execute()
+
   
   
