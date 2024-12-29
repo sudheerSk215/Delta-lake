@@ -24,3 +24,5 @@ joindf = deltadf.join(snowdf,["username"],"left")
  joindf.write.mode("overwrite").save("s3://skbuck/dest/masterdata") 
 
       
+
+      
